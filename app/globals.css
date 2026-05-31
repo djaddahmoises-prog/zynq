@@ -1,53 +1,57 @@
 @import "tailwindcss";
 
 :root {
-  /* Base */
-  --bg:        #F7F3EC;
-  --bg2:       #EFE9DE;
-  --surface:   #FFFFFF;
-  --surface2:  #F4F0E8;
-
-  /* Borders */
-  --border:    #DDD5C8;
-  --border2:   #C9BFB0;
-
-  /* Text */
-  --fg:        #111111;
-  --fg2:       #6B7280;
-  --fg3:       #9CA3AF;
-
-  /* Aqua accent */
-  --aqua:      #0BA5A0;
-  --aqua-dark: #098F8A;
-  --aqua-bg:   #E6F7F6;
-  --aqua-muted:#B2E4E2;
-
-  /* Util */
-  --red:       #DC2626;
-  --red-bg:    #FEE2E2;
+  --bg:         #F7F3EC;
+  --bg2:        #EDE7DA;
+  --surface:    #FFFFFF;
+  --surface2:   #F4F0E8;
+  --border:     #E0D8CE;
+  --border2:    #C9BFB0;
+  --fg:         #111111;
+  --fg2:        #5C5C5C;
+  --fg3:        #9CA3AF;
+  --aqua:       #0BA5A0;
+  --aqua-dark:  #089690;
+  --aqua-bg:    #E6F7F6;
+  --aqua-muted: #A8DFDD;
+  --red:        #DC2626;
+  --red-bg:     #FEE2E2;
+  --sidebar-w:  260px;
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { height: 100%; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { height: 100%; }
+
 body {
+  height: 100%;
   background: var(--bg);
   color: var(--fg);
-  font-family: var(--font-inter, 'Inter', system-ui, sans-serif);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
-  font-size: 15px;
+  font-size: 14px;
+  line-height: 1.5;
 }
 
-::-webkit-scrollbar { width: 4px; height: 4px; }
+button { font-family: inherit; }
+textarea, input { font-family: inherit; }
+
+::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 99px; }
 
-@keyframes blink {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0; }
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
-.cursor-blink { animation: blink 1s step-end infinite; }
-
-@keyframes dot-bounce {
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+@keyframes bounce-dot {
   0%, 80%, 100% { transform: translateY(0); }
-  40%           { transform: translateY(-5px); }
+  40% { transform: translateY(-4px); }
+}
+@keyframes cursor-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
 }
