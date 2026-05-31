@@ -49,7 +49,7 @@ export default function Home() {
     <div className="min-h-full" style={{ background: 'var(--bg)' }}>
       {/* Header */}
       <header style={{ background: 'var(--surface)', borderBottom: '1px solid var(--border)' }}>
-        <div className="max-w-2xl mx-auto px-5 h-14 flex items-center justify-between">
+        <div className="w-full max-w-5xl mx-auto px-6 h-14 flex items-center justify-between">
           <span className="text-lg font-bold tracking-tight" style={{ color: 'var(--fg)' }}>Zynq</span>
           <button
             onClick={() => setShowModal(true)}
@@ -64,9 +64,9 @@ export default function Home() {
       </header>
 
       {/* Content */}
-      <div className="max-w-2xl mx-auto px-5 py-10">
+      <div className="w-full max-w-5xl mx-auto px-6 py-10">
         {sessions.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-24 gap-5 text-center">
+          <div className="flex flex-col items-center justify-center min-h-[calc(100vh-56px)] gap-5 text-center">
             <div className="w-14 h-14 rounded-2xl flex items-center justify-center"
               style={{ background: 'var(--aqua-bg)', border: '1px solid var(--aqua-muted)' }}>
               <Sparkles size={24} style={{ color: 'var(--aqua)' }} strokeWidth={1.5} />
