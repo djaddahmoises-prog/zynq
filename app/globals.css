@@ -4,13 +4,15 @@
   --bg: #09090b;
   --surface: #18181b;
   --surface2: #27272a;
-  --border: rgba(255,255,255,0.08);
+  --surface3: #3f3f46;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.12);
   --fg: #fafafa;
-  --muted: #71717a;
+  --fg2: #a1a1aa;
   --accent: #7c3aed;
   --accent-hover: #6d28d9;
   --accent-light: #a78bfa;
-  --accent-glow: rgba(124,58,237,0.3);
+  --accent-glow: rgba(124,58,237,0.28);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -22,6 +24,27 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--surface2); border-radius: 99px; }
+
+@keyframes pulse-ring {
+  0% { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
+.recording-ring::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: #ef4444;
+  animation: pulse-ring 1.2s ease-out infinite;
+}
+
+@keyframes wave {
+  0%, 100% { transform: scaleY(0.3); }
+  50% { transform: scaleY(1); }
+}
+.wave-bar {
+  animation: wave 0.8s ease-in-out infinite;
+}
