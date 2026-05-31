@@ -539,7 +539,7 @@ export default function SessionPage() {
                 onClick={generate} disabled={generating || !hasContent}
                 style={{
                   width: '100%', padding: '12px', borderRadius: 10, border: 'none',
-                  fontSize: 14, fontWeight: 600, color: '#fff',
+                  fontSize: 14, fontWeight: 600,
                   background: hasContent && !generating ? 'var(--aqua)' : 'var(--bg2)',
                   color: hasContent && !generating ? '#fff' : 'var(--fg3)',
                   cursor: hasContent && !generating ? 'pointer' : 'not-allowed',
