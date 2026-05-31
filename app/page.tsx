@@ -2,224 +2,134 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Plus, Trash2, ChevronRight, Clock, Mic, ImageIcon, Sparkles } from 'lucide-react'
-import {
-  getSessions, createSession, deleteSession,
-  Session, SessionType,
-  SESSION_LABELS, SESSION_COLORS,
-} from '@/lib/sessions'
-
-const TYPES: { type: SessionType; label: string; desc: string }[] = [
-  { type: 'class',    label: 'Clase',    desc: 'Apuntes de clase o conferencia' },
-  { type: 'meeting',  label: 'Reunión',  desc: 'Minutas y acuerdos' },
-  { type: 'business', label: 'Negocio',  desc: 'Análisis y estrategia' },
-  { type: 'workshop', label: 'Taller',   desc: 'Workshop o capacitación' },
-]
+import { Clock, Mic, ImageIcon, Sparkles, ChevronRight } from 'lucide-react'
+import Sidebar from '@/components/Sidebar'
+import { getSessions, deleteSession, Session, SESSION_LABELS, SESSION_COLORS } from '@/lib/sessions'
 
 function fmtDate(iso: string) {
-  return new Date(iso).toLocaleDateString('es-MX', { day: 'numeric', month: 'short', year: 'numeric' })
-}
-function fmtDuration(s: number) {
-  const m = Math.floor(s / 60), sec = s % 60
-  return `${m}:${String(sec).padStart(2, '0')}`
+  return new Date(iso).toLocaleDateString('es-MX', { day: 'numeric', month: 'short' })
 }
 
 export default function Home() {
   const router = useRouter()
   const [sessions, setSessions] = useState<Session[]>([])
-  const [showModal, setShowModal] = useState(false)
-  const [name, setName] = useState('')
-  const [type, setType] = useState<SessionType>('class')
 
   useEffect(() => { setSessions(getSessions()) }, [])
 
-  const start = () => {
-    if (!name.trim()) return
-    const s = createSession(name.trim(), type)
-    router.push(`/session/${s.id}`)
-  }
-
-  const remove = (id: string, e: React.MouseEvent) => {
-    e.stopPropagation()
-    deleteSession(id)
-    setSessions(getSessions())
-  }
-
   return (
-    <div className="min-h-full" style={{ background: 'var(--bg)' }}>
-      {/* Header */}
-      <header style={{ background: 'var(--surface)', borderBottom: '1px solid var(--border)' }}>
-        <div className="w-full max-w-5xl mx-auto px-6 h-14 flex items-center justify-between">
-          <span className="text-lg font-bold tracking-tight" style={{ color: 'var(--fg)' }}>Zynq</span>
-          <button
-            onClick={() => setShowModal(true)}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-white transition-colors"
-            style={{ background: 'var(--aqua)' }}
-            onMouseEnter={e => (e.currentTarget.style.background = 'var(--aqua-dark)')}
-            onMouseLeave={e => (e.currentTarget.style.background = 'var(--aqua)')}>
-            <Plus size={15} strokeWidth={2.5} />
-            Nueva sesión
-          </button>
-        </div>
-      </header>
+    <div style={{ display: 'flex', height: '100vh', overflow: 'hidden', background: 'var(--bg)' }}>
+      <Sidebar />
 
-      {/* Content */}
-      <div className="w-full max-w-5xl mx-auto px-6 py-10">
+      <main style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
         {sessions.length === 0 ? (
-          <div className="flex flex-col items-center justify-center min-h-[calc(100vh-56px)] gap-5 text-center">
-            <div className="w-14 h-14 rounded-2xl flex items-center justify-center"
-              style={{ background: 'var(--aqua-bg)', border: '1px solid var(--aqua-muted)' }}>
-              <Sparkles size={24} style={{ color: 'var(--aqua)' }} strokeWidth={1.5} />
-            </div>
-            <div className="space-y-2">
-              <h1 className="text-2xl font-bold" style={{ color: 'var(--fg)' }}>Tu asistente de estudio</h1>
-              <p className="text-sm max-w-xs leading-relaxed" style={{ color: 'var(--fg2)' }}>
-                Graba clases, sube fotos del pizarrón y genera presentaciones, guías y resúmenes con IA.
+          /* ── Empty state ── */
+          <div style={{
+            flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center',
+            padding: '0 32px',
+          }}>
+            <div style={{ maxWidth: 480, textAlign: 'center' }}>
+              <div style={{
+                width: 56, height: 56, borderRadius: 16, margin: '0 auto 24px',
+                background: 'var(--aqua-bg)', border: '1px solid var(--aqua-muted)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}>
+                <Sparkles size={24} style={{ color: 'var(--aqua)' }} strokeWidth={1.5} />
+              </div>
+              <h1 style={{ fontSize: 26, fontWeight: 700, color: 'var(--fg)', marginBottom: 10, letterSpacing: '-0.02em' }}>
+                Tu asistente de estudio
+              </h1>
+              <p style={{ fontSize: 14, color: 'var(--fg2)', lineHeight: 1.6, marginBottom: 28 }}>
+                Graba clases, sube fotos del pizarrón y genera presentaciones,
+                guías de estudio o resúmenes con IA.
+              </p>
+              <p style={{ fontSize: 13, color: 'var(--fg3)' }}>
+                Crea una nueva sesión desde la barra lateral para comenzar.
               </p>
             </div>
-            <button
-              onClick={() => setShowModal(true)}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold text-white transition-colors"
-              style={{ background: 'var(--aqua)' }}
-              onMouseEnter={e => (e.currentTarget.style.background = 'var(--aqua-dark)')}
-              onMouseLeave={e => (e.currentTarget.style.background = 'var(--aqua)')}>
-              <Plus size={15} strokeWidth={2.5} />
-              Crear primera sesión
-            </button>
           </div>
         ) : (
-          <div className="space-y-3">
-            <h2 className="text-xs font-semibold uppercase tracking-widest mb-4" style={{ color: 'var(--fg3)' }}>
-              Sesiones recientes
+          /* ── Sessions grid ── */
+          <div style={{ padding: '32px 40px', maxWidth: 960, width: '100%', margin: '0 auto' }}>
+            <h2 style={{ fontSize: 22, fontWeight: 700, color: 'var(--fg)', marginBottom: 6, letterSpacing: '-0.02em' }}>
+              Sesiones
             </h2>
-            {sessions.map(s => (
-              <div
-                key={s.id}
-                onClick={() => router.push(`/session/${s.id}`)}
-                className="flex items-center gap-4 p-4 rounded-xl cursor-pointer transition-all group"
-                style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}
-                onMouseEnter={e => (e.currentTarget.style.borderColor = 'var(--border2)')}
-                onMouseLeave={e => (e.currentTarget.style.borderColor = 'var(--border)')}>
+            <p style={{ fontSize: 13, color: 'var(--fg2)', marginBottom: 28 }}>
+              {sessions.length} sesión{sessions.length !== 1 ? 'es' : ''}
+            </p>
 
-                {/* Type bar */}
-                <div className="w-1 h-10 rounded-full shrink-0" style={{ background: SESSION_COLORS[s.type] }} />
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 14 }}>
+              {sessions.map(s => (
+                <div
+                  key={s.id}
+                  onClick={() => router.push(`/session/${s.id}`)}
+                  style={{
+                    background: 'var(--surface)',
+                    border: '1px solid var(--border)',
+                    borderRadius: 14,
+                    padding: '18px 20px',
+                    cursor: 'pointer',
+                    transition: 'border-color 0.15s, box-shadow 0.15s',
+                    position: 'relative',
+                  }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.borderColor = 'var(--border2)'
+                    e.currentTarget.style.boxShadow = '0 2px 12px rgba(0,0,0,0.06)'
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.borderColor = 'var(--border)'
+                    e.currentTarget.style.boxShadow = 'none'
+                  }}>
 
-                {/* Info */}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="font-semibold truncate" style={{ color: 'var(--fg)', fontSize: 14 }}>{s.name}</span>
-                    <span className="shrink-0 text-xs font-medium px-2 py-0.5 rounded"
-                      style={{ background: SESSION_COLORS[s.type] + '18', color: SESSION_COLORS[s.type] }}>
+                  {/* Top row */}
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+                    <span style={{
+                      fontSize: 11, fontWeight: 600,
+                      padding: '3px 8px', borderRadius: 6,
+                      background: SESSION_COLORS[s.type] + '18',
+                      color: SESSION_COLORS[s.type],
+                    }}>
                       {SESSION_LABELS[s.type]}
                     </span>
+                    <span style={{ fontSize: 12, color: 'var(--fg3)' }}>{fmtDate(s.createdAt)}</span>
                   </div>
-                  <div className="flex items-center gap-3 text-xs" style={{ color: 'var(--fg3)' }}>
-                    <span>{fmtDate(s.createdAt)}</span>
-                    {s.duration > 0 && (
-                      <span className="flex items-center gap-1">
-                        <Clock size={11} /> {fmtDuration(s.duration)}
-                      </span>
-                    )}
+
+                  {/* Name */}
+                  <div style={{ fontSize: 15, fontWeight: 600, color: 'var(--fg)', marginBottom: 12, lineHeight: 1.3 }}>
+                    {s.name}
+                  </div>
+
+                  {/* Stats */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                     {s.transcript && (
-                      <span className="flex items-center gap-1">
-                        <Mic size={11} /> {s.transcript.split(' ').filter(Boolean).length} palabras
+                      <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 12, color: 'var(--fg3)' }}>
+                        <Mic size={12} strokeWidth={1.8} />
+                        {s.transcript.split(' ').filter(Boolean).length} palabras
                       </span>
                     )}
                     {s.images.length > 0 && (
-                      <span className="flex items-center gap-1">
-                        <ImageIcon size={11} /> {s.images.length}
+                      <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 12, color: 'var(--fg3)' }}>
+                        <ImageIcon size={12} strokeWidth={1.8} />
+                        {s.images.length} imagen{s.images.length !== 1 ? 'es' : ''}
                       </span>
                     )}
                     {s.generated.length > 0 && (
-                      <span className="flex items-center gap-1">
-                        <Sparkles size={11} /> {s.generated.length}
+                      <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 12, color: 'var(--aqua)' }}>
+                        <Sparkles size={12} strokeWidth={1.8} />
+                        {s.generated.length} generado{s.generated.length !== 1 ? 's' : ''}
                       </span>
                     )}
                   </div>
-                </div>
 
-                {/* Actions */}
-                <div className="flex items-center gap-1 shrink-0">
-                  <button
-                    onClick={e => remove(s.id, e)}
-                    className="p-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-all"
-                    style={{ color: 'var(--fg3)' }}
-                    onMouseEnter={e => (e.currentTarget.style.color = 'var(--red)')}
-                    onMouseLeave={e => (e.currentTarget.style.color = 'var(--fg3)')}>
-                    <Trash2 size={14} />
-                  </button>
-                  <ChevronRight size={16} style={{ color: 'var(--fg3)' }} />
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* New Session Modal */}
-      {showModal && (
-        <div
-          className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4"
-          style={{ background: 'rgba(0,0,0,0.35)', backdropFilter: 'blur(6px)' }}
-          onClick={e => e.target === e.currentTarget && setShowModal(false)}>
-          <div className="w-full max-w-md rounded-2xl p-6 space-y-5"
-            style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}>
-
-            <div>
-              <h3 className="text-lg font-bold" style={{ color: 'var(--fg)' }}>Nueva sesión</h3>
-              <p className="text-sm mt-1" style={{ color: 'var(--fg2)' }}>Dale un nombre y tipo a tu sesión</p>
-            </div>
-
-            <input
-              autoFocus
-              value={name}
-              onChange={e => setName(e.target.value)}
-              onKeyDown={e => e.key === 'Enter' && start()}
-              placeholder="Ej: Cálculo diferencial, Reunión de ventas..."
-              className="w-full px-4 py-3 rounded-lg text-sm outline-none transition-all"
-              style={{ background: 'var(--bg2)', border: '1px solid var(--border)', color: 'var(--fg)' }}
-              onFocus={e => (e.currentTarget.style.borderColor = 'var(--aqua)')}
-              onBlur={e => (e.currentTarget.style.borderColor = 'var(--border)')}
-            />
-
-            <div className="grid grid-cols-2 gap-2">
-              {TYPES.map(t => (
-                <button
-                  key={t.type}
-                  onClick={() => setType(t.type)}
-                  className="p-3.5 rounded-xl text-left transition-all"
-                  style={{
-                    background: type === t.type ? 'var(--aqua-bg)' : 'var(--surface2)',
-                    border: `1px solid ${type === t.type ? 'var(--aqua-muted)' : 'var(--border)'}`,
-                  }}>
-                  <div className="text-sm font-semibold mb-0.5" style={{ color: type === t.type ? 'var(--aqua-dark)' : 'var(--fg)' }}>
-                    {t.label}
+                  {/* Arrow */}
+                  <div style={{ position: 'absolute', right: 16, top: '50%', transform: 'translateY(-50%)', color: 'var(--fg3)' }}>
+                    <ChevronRight size={16} />
                   </div>
-                  <div className="text-xs" style={{ color: 'var(--fg3)' }}>{t.desc}</div>
-                </button>
+                </div>
               ))}
             </div>
-
-            <div className="flex gap-3">
-              <button
-                onClick={() => setShowModal(false)}
-                className="flex-1 py-2.5 rounded-lg text-sm font-medium transition-all"
-                style={{ background: 'var(--surface2)', color: 'var(--fg2)', border: '1px solid var(--border)' }}>
-                Cancelar
-              </button>
-              <button
-                onClick={start}
-                disabled={!name.trim()}
-                className="flex-1 py-2.5 rounded-lg text-sm font-semibold text-white transition-all disabled:opacity-40"
-                style={{ background: 'var(--aqua)' }}
-                onMouseEnter={e => !e.currentTarget.disabled && (e.currentTarget.style.background = 'var(--aqua-dark)')}
-                onMouseLeave={e => (e.currentTarget.style.background = 'var(--aqua)')}>
-                Comenzar
-              </button>
-            </div>
           </div>
-        </div>
-      )}
+        )}
+      </main>
     </div>
   )
 }
