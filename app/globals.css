@@ -1,18 +1,30 @@
 @import "tailwindcss";
 
 :root {
-  --bg: #09090b;
-  --surface: #18181b;
-  --surface2: #27272a;
-  --surface3: #3f3f46;
-  --border: rgba(255,255,255,0.07);
-  --border2: rgba(255,255,255,0.12);
-  --fg: #fafafa;
-  --fg2: #a1a1aa;
-  --accent: #7c3aed;
-  --accent-hover: #6d28d9;
-  --accent-light: #a78bfa;
-  --accent-glow: rgba(124,58,237,0.28);
+  /* Base */
+  --bg:        #F7F3EC;
+  --bg2:       #EFE9DE;
+  --surface:   #FFFFFF;
+  --surface2:  #F4F0E8;
+
+  /* Borders */
+  --border:    #DDD5C8;
+  --border2:   #C9BFB0;
+
+  /* Text */
+  --fg:        #111111;
+  --fg2:       #6B7280;
+  --fg3:       #9CA3AF;
+
+  /* Aqua accent */
+  --aqua:      #0BA5A0;
+  --aqua-dark: #098F8A;
+  --aqua-bg:   #E6F7F6;
+  --aqua-muted:#B2E4E2;
+
+  /* Util */
+  --red:       #DC2626;
+  --red-bg:    #FEE2E2;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -20,31 +32,22 @@ html, body { height: 100%; }
 body {
   background: var(--bg);
   color: var(--fg);
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: var(--font-inter, 'Inter', system-ui, sans-serif);
   -webkit-font-smoothing: antialiased;
+  font-size: 15px;
 }
 
 ::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--surface2); border-radius: 99px; }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 99px; }
 
-@keyframes pulse-ring {
-  0% { transform: scale(1); opacity: 0.6; }
-  100% { transform: scale(1.8); opacity: 0; }
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
 }
-.recording-ring::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  background: #ef4444;
-  animation: pulse-ring 1.2s ease-out infinite;
-}
+.cursor-blink { animation: blink 1s step-end infinite; }
 
-@keyframes wave {
-  0%, 100% { transform: scaleY(0.3); }
-  50% { transform: scaleY(1); }
-}
-.wave-bar {
-  animation: wave 0.8s ease-in-out infinite;
+@keyframes dot-bounce {
+  0%, 80%, 100% { transform: translateY(0); }
+  40%           { transform: translateY(-5px); }
 }

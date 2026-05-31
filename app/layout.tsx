@@ -1,15 +1,18 @@
-import type { Metadata } from "next";
-import "./globals.css";
+import type { Metadata } from 'next'
+import { Inter } from 'next/font/google'
+import './globals.css'
+
+const inter = Inter({ subsets: ['latin'], variable: '--font-inter', display: 'swap' })
 
 export const metadata: Metadata = {
-  title: "Zynq — Your AI Assistant",
-  description: "A powerful AI assistant for daily use. Ask anything, get instant answers.",
-};
+  title: 'Zynq — AI Study Assistant',
+  description: 'Graba clases, sube imágenes y genera guías de estudio con IA.',
+}
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="h-full">
+    <html lang="es" className={`h-full ${inter.variable}`}>
       <body className="h-full">{children}</body>
     </html>
-  );
+  )
 }
